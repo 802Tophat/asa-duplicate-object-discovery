@@ -8,6 +8,7 @@ output_file_name is an optional argument
 
 '''
 
+
 import sys
 import datetime
 from ciscoconfparse import CiscoConfParse
@@ -45,12 +46,12 @@ def check_dup_object(object_dictionary):
   duplicates = {}
   already_found = []
   #Yeah, I know the following is a hackers code...that's me.  Get the job done.  Fix it later.
-  for k,v in object_dictionary.items():
+  for k,v in list(object_dictionary.items()):
     item = []
     # We don't want multiple iterations of the same matches - once an object has been processed
     # or found to be a duplicate, it is added to already_found and ignored in futer iterations
     if not k in already_found:
-      for x,y in object_dictionary.items():
+      for x,y in list(object_dictionary.items()):
         # Looking to verify that the value from our source object matches the value of another
         # and both aren't empty
         if v == y and v and y:
@@ -74,12 +75,12 @@ def check_dup_object_group(object_group_dictionary):
   duplicates = {}
   already_found = []
   #Yeah, I know the following is a hackers code...that's me.  Get the job done.  Fix it later.
-  for k,v in object_group_dictionary.items():
+  for k,v in list(object_group_dictionary.items()):
     item = []
     # We don't want multiple iterations of the same matches - once an object group has been processed
     # or found to be a duplicate, it is added to already_found and ignored in futer iterations
     if not k in already_found:
-      for x,y in object_group_dictionary.items():
+      for x,y in list(object_group_dictionary.items()):
         # Looking to verify that the value from our source object group matches the value of another
         # and both aren't empty
         if v == y and v and y:
@@ -111,7 +112,7 @@ def write_to_file(objects,object_groups,input_parse,output_file):
 
   f.write("------------------------------\n     Object Duplicates\n------------------------------\n\n\n")
   i = 1
-  for k,v in objects.items():
+  for k,v in list(objects.items()):
     f.write("-----------------\nDuplicate Item " + str(i) + "\n-----------------\n\n")
     #Write primary object out
     f.write("First Object Found:\n\n")
@@ -147,7 +148,7 @@ def write_to_file(objects,object_groups,input_parse,output_file):
 
   f.write("------------------------------\n     Object Group Duplicates\n------------------------------\n\n\n")
   i = 1
-  for k,v in object_groups.items():
+  for k,v in list(object_groups.items()):
     f.write("-----------------\nDuplicate Item " + str(i) + "\n-----------------\n\n")
     #Write primary object out
     f.write("First Object Group Found:\n\n")
@@ -186,7 +187,7 @@ def main():
   # Verify we have the right number of arguments.
   if len(sys.argv) > 1 and len(sys.argv) < 4:
     # Check to see if a file-name argument was given and if so assign it to the output variable.  Otherwise assign a generic output.txt
-    print "\n\nRunning script to identity duplicte objects and object-groups in the provided ASA configuration...\n\n\n\n"
+    print("Running script to identity duplicte objects and object-groups in the provided ASA configuration...")
     if len(sys.argv) >= 3:
       output = sys.argv[2]
     else:
@@ -206,9 +207,9 @@ def main():
     object_group_dups = check_dup_object_group(object_group_dict)
     # Share what we've learned with the output file
     write_to_file(object_dups,object_group_dups,config_parse,output)
-    print "Script execution is complete and results have been written to " + output + "\n\n"
+    print(("Script execution is complete and results have been written to " + output + "\n\n"))
   else:
-    print "\n\n**** ERROR ****\nIncorrect Number Of Arguments\n***************\n\nUsage:  python asa_duplicate_object.py 'configuration_file_name' 'output_file_name'\n\noutput_file_name is an optional argument.\n\n"
+    print("\n\n**** ERROR ****\nIncorrect Number Of Arguments\n***************\n\nUsage:  python asa_duplicate_object.py 'configuration_file_name' 'output_file_name'\n\noutput_file_name is an optional argument.\n\n")
 
 
 if __name__ == '__main__':
